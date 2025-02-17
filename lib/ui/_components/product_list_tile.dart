@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_job_assignment/utils/utils.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class ProductListTile extends StatelessWidget {
@@ -31,11 +32,11 @@ class ProductListTile extends StatelessWidget {
         child: Row(
           children: [
             Text(
-              '$price',
+              formatCurrency(price),
               style: TextTheme.of(context).titleSmall?.copyWith(color: Color(0xff4F378B)),
             ),
             Text(
-              '/ unit',
+              ' / unit',
               style: TextTheme.of(context).titleSmall?.copyWith(color: Color(0xff625B71)),
             ),
           ],

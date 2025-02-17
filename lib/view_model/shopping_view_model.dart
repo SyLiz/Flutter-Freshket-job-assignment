@@ -83,6 +83,7 @@ class ShoppingViewModel with ChangeNotifier {
       final result = await productApi.fetchRecommendedProducts();
       productSection[PSection.recommend] = ProductSection(
         section: PSection.recommend,
+        skeletonCount: 4,
         products: createUniqueProducts(PSection.latest, result),
       );
     } catch (e) {

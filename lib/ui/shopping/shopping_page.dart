@@ -1,6 +1,5 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_job_assignment/ui/shopping/components/product_list_tile.dart';
+import 'package:flutter_job_assignment/ui/_components/product_list_tile.dart';
 import 'package:flutter_job_assignment/view_model/cart_view_model.dart';
 import 'package:flutter_job_assignment/view_model/shopping_view_model.dart';
 import 'package:provider/provider.dart';
