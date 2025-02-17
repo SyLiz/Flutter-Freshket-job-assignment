@@ -1,5 +1,7 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_job_assignment/ui/shopping/components/product_list_tile.dart';
+import 'package:flutter_job_assignment/view_model/cart_view_model.dart';
 import 'package:flutter_job_assignment/view_model/shopping_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -25,37 +27,50 @@ class _ShoppingPageState extends State<ShoppingPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ShoppingViewModel>(builder: (context, viewModel, _) {
+    return Consumer<ShoppingViewModel>(builder: (context, shopping, _) {
       return Scaffold(
         body: NotificationListener(
           onNotification: (ScrollNotification notification) {
             if (notification.metrics.pixels >= notification.metrics.maxScrollExtent - 200) {
-              viewModel.onLoadMore();
+              shopping.onLoadMore();
             }
             return false;
           },
           child: CustomScrollView(
             slivers: [
-              for (var entry in viewModel.productSection.entries) ...[
+              for (var entry in shopping.productSection.entries) ...[
                 SliverMainAxisGroup(
                   slivers: [
                     SliverAppBar(title: Text(entry.value.section.title), pinned: true),
                     SliverToBoxAdapter(
-                      child: Builder(builder: (context) {
+                      child: Consumer<CartViewModel>(builder: (context, cart, _) {
                         final items = entry.value.products.isNotEmpty
                             ? entry.value.products
-                            : List.filled(entry.value.skeletonCount, ProductListTile(title: "Item number 1 as title"));
+                                .map((item) => ProductListTile(
+                                      title: item.name ?? '',
+                                      price: item.price ?? 0.0,
+                                      count: cart.cartOrder[item.uniqueId]?.count ?? 0,
+                                      onIncrement: () => cart.addToCart(item),
+                                      onDecrement: () => cart.decrementFromCart(item),
+                                    ))
+                                .toList()
+                            : List.filled(
+                                entry.value.skeletonCount,
+                                ProductListTile(
+                                  title: "Item number 1 as title",
+                                  price: 0,
+                                )).toList();
 
-                        if (items.isEmpty && !viewModel.isRecommendProductLoading) {
+                        if (items.isEmpty && !shopping.isRecommendProductLoading) {
                           ///TODO show RecommendProduct isEmpty
                         }
-                        if (items.isEmpty && !viewModel.isLatestProductsLoading) {
+                        if (items.isEmpty && !shopping.isLatestProductsLoading) {
                           ///TODO show LatestProducts isEmpty
                         }
 
                         switch (entry.value.section) {
                           case PSection.recommend:
-                            if (viewModel.recommendProductError != null) {
+                            if (shopping.recommendProductError != null) {
                               return Column(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 spacing: 10,
@@ -65,10 +80,10 @@ class _ShoppingPageState extends State<ShoppingPage> {
                                     height: 54,
                                     width: 54,
                                   ),
-                                  Text(viewModel.recommendProductError!),
+                                  Text(shopping.recommendProductError!),
                                   FilledButton(
                                       onPressed: () {
-                                        viewModel.fetchRecommendProducts();
+                                        shopping.fetchRecommendProducts();
                                       },
                                       child: Text("Refresh")),
                                 ],
@@ -81,11 +96,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
                                 padding: EdgeInsets.zero,
                                 shrinkWrap: true,
                                 itemCount: items.length,
-                                itemBuilder: (c, i) => ProductListTile(
-                                  title: entry.value.section.title,
-                                  onIncrement: () {},
-                                  onDecrement: () {},
-                                ),
+                                itemBuilder: (c, i) => items[i],
                               ),
                             );
                           case PSection.latest:
@@ -98,15 +109,11 @@ class _ShoppingPageState extends State<ShoppingPage> {
                                     padding: EdgeInsets.zero,
                                     shrinkWrap: true,
                                     itemCount: items.length,
-                                    itemBuilder: (c, i) => ProductListTile(
-                                      title: entry.value.section.title,
-                                      onIncrement: () {},
-                                      onDecrement: () {},
-                                    ),
+                                    itemBuilder: (c, i) => items[i],
                                   ),
                                 ),
                                 Visibility(
-                                  visible: viewModel.isLatestProductsLoading && entry.value.products.isNotEmpty,
+                                  visible: shopping.isLatestProductsLoading && entry.value.products.isNotEmpty,
                                   child: Center(
                                     child: Padding(
                                       padding: const EdgeInsets.symmetric(vertical: 20),
