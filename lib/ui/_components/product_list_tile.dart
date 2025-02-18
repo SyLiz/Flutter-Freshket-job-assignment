@@ -42,28 +42,30 @@ class ProductListTile extends StatelessWidget {
           ],
         ),
       ),
-      trailing: Builder(builder: (context) {
-        if (count > 0) {
+      trailing: Skeleton.ignore(
+        child: Builder(builder: (context) {
+          if (count > 0) {
+            return SizedBox(
+              width: MediaQuery.sizeOf(context).width * 0.333,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton.filled(color: Colors.white, onPressed: onDecrement, icon: Icon(Icons.remove)),
+                  Text(
+                    count.toString(),
+                    style: TextTheme.of(context).titleMedium,
+                  ),
+                  IconButton.filled(color: Colors.white, onPressed: onIncrement, icon: Icon(Icons.add)),
+                ],
+              ),
+            );
+          }
           return SizedBox(
             width: MediaQuery.sizeOf(context).width * 0.333,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                IconButton.filled(color: Colors.white, onPressed: onDecrement, icon: Icon(Icons.remove)),
-                Text(
-                  count.toString(),
-                  style: TextTheme.of(context).titleMedium,
-                ),
-                IconButton.filled(color: Colors.white, onPressed: onIncrement, icon: Icon(Icons.add)),
-              ],
-            ),
+            child: FilledButton(onPressed: onIncrement, child: Text("Add to cart")),
           );
-        }
-        return SizedBox(
-          width: MediaQuery.sizeOf(context).width * 0.333,
-          child: FilledButton(onPressed: onIncrement, child: Text("Add to cart")),
-        );
-      }),
+        }),
+      ),
     );
   }
 
