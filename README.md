@@ -23,7 +23,7 @@ You can check the Flutter version in the `/.fvmrc` file:
 
 ## Generating a Unique ID for Promotion Logic
 
-To apply promotion logic for the same product, I generate a unique ID based on the format: `Section (Recommend/Latest) + ID + Name`. This helps track product promotions effectively.
+Since each API call generates products randomly, To apply promotion logic for the same product, I generate a unique ID based on the format: `Section (Recommend/Latest) + ID + Name`. This helps track product promotions effectively.
 
 ## Configuring API Base URL for Local Development
 
