@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_job_assignment/route/go_route.dart';
 import 'package:flutter_job_assignment/view_model/cart_view_model.dart';
@@ -13,6 +12,7 @@ class AppInitializer {
     // Perform initialization tasks like API calls, Firebase setup, etc.
     await Future.delayed(Duration(milliseconds: 100)); // Simulating initialization
 
+    AppConfig.initialize(config);
     DioService.getInstance(baseUrl: config.baseURL);
 
     runApp(const AppInitializerPage());
